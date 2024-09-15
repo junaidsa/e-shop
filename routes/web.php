@@ -23,8 +23,10 @@ use App\Http\Controllers\AppController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\PatientController;
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
 return view('auth.login');
@@ -38,6 +40,17 @@ Route::prefix('admin')->group(function () {
     Route::middleware('admin.auth')->group(function () {
         Route::get('/dashboad', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+        Route::get('/getSlug', function (Request $request) {
+
+            if (!empty($request->title)) {
+                $slug = Str::slug($request->title);
+            }
+                return response()->json([
+                    'status' => true,
+                    'slug' =>  $slug
+                ]);
+})->name('getSlug');
+// End
 
     });
 
